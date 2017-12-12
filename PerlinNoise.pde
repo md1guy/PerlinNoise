@@ -7,34 +7,41 @@ Noise noise = new Noise();
 double xoff = 0;
 double yoff = 0;
 
-float rectSize = 2;
+double x = 0;
+double y = 0;
+
+float rectSize = 5;
 float noiseValue;
 
 double seed = 0;
 
-color col, col2, col3;
+color col;
 
 void setup() {
   size(800, 800);
   
   frameRate(10000);
   
-  noise.SetOctaves(6);
+  noise.SetOctaves(5);
   noise.SetPersistence(0.5);
   noise.SetFrequency(1);
-  noise.SetLacunarity(2.4);
+  noise.SetLacunarity(2);
   
   drawNoise();
 }
 
 void draw() {
-  /*noise.SetOctaves((int)map(mouseX, 0, width, 1, 18));
-  noise.SetPersistence(map(mouseY, 0, height, 0, 1));
-  noise.SetLacunarity(map(mouseX, 0, width, 0, 24));
+  //noise.SetOctaves((int)map(mouseX, 0, width, 1, 18));
+  //noise.SetPersistence(map(mouseY, 0, height, 0, 1));
+  //noise.SetFrequency(map(mouseY, 0, height, 1, 16));
+  //noise.SetLacunarity(map(mouseY, 0, width, 0, 16));
   
-  //seed = map(mouseX, 0, width, 0, 25);
+  //seed = map(mouseX, 0, width, 0, 100);
   
-  drawNoise();*/
+  x = map(mouseX, 0, width, 0, 100);
+  y = map(mouseY, 0, height, 0, 100);
+  
+  drawNoise();
 }
 
 void mousePressed() {
@@ -46,30 +53,39 @@ void drawNoise() {
   xoff = 0;
   yoff = 0;
   
-  int mult1 = random.nextInt(10000);
-  int mult2 = random.nextInt(10000);
-  int mult3 = random.nextInt(10000);
+  float maxNoiseHeight = -1;
+  float minNoiseHeight = 2;
+  
+  float[][] noiseMap = new float[height][width];
+  
+  for(int y = 0; y < height; y += rectSize) {
+    for(int x = 0; x < width; x += rectSize) {
+      noiseValue = (float)(noise.perlin(xoff + this.x, yoff + this.y, seed));
+      
+      if(noise.perlin(xoff + this.x, yoff + this.y, seed) > maxNoiseHeight) {
+        maxNoiseHeight = noiseValue;
+      } 
+      else if (noise.perlin(xoff + this.x, yoff + this.y, seed) < minNoiseHeight) {
+        minNoiseHeight = noiseValue;
+      }
+      
+      noiseMap[x][y] = noiseValue;
+
+      xoff += 0.03;
+    }
+    
+    xoff = 0;
+    yoff += 0.03;
+  }
   
   for(int y = 0; y < height; y += rectSize) {
     for(int x = 0; x < width; x += rectSize) {
       
-      noiseValue = (float)(noise.perlin(xoff, yoff, seed) * 255);
-      col = int(map(noiseValue, 0, 255, 0, 255));
-      
-      //noiseValue = (float)(noise.basePerlin(xoff + mult2, yoff + mult2, 0) * 255);
-      col2 = int(map(noiseValue, 0, 255, 0, 255));
-
-      //noiseValue = (float)(noise.basePerlin(xoff + mult3, yoff + mult3, 0) * 255);
-      col3 = int(map(noiseValue, 0, 255, 0, 255));
+      noiseValue = map(noiseMap[x][y], minNoiseHeight, maxNoiseHeight, 0, 1);
       
       noStroke();
-      fill(col, col2, col3);
+      fill(noiseValue * 255);
       rect(x, y, rectSize, rectSize);
-      
-      xoff += 0.01;
     }
-    
-    xoff = 0;
-    yoff += 0.01;
   }
 }

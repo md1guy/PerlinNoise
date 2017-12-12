@@ -5,7 +5,7 @@ class Noise {
   double persistence = 0.5;
   double frequency = 1;
   double amplitude = 1;
-  double lacunarity = 2.6;
+  double lacunarity = 2;
   
   void SetOctaves(int octaves) {
     this.octaves = octaves;
@@ -61,14 +61,14 @@ class Noise {
       y = y % repeat;
       z = z % repeat;
     }
-    
+
     int xi = (int)x & 255;                                                          // Calculate the "unit cube" that the point asked will be located in
     int yi = (int)y & 255;                                                          // The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that plus 1.
     int zi = (int)z & 255;
     double xf = x - (int)x;                                                         // Next we calculate the location (from 0.0 to 1.0) in that cube.
     double yf = y - (int)y;
     double zf = z - (int)z;
-    
+     
     double u = fade(xf);
     double v = fade(yf);
     double w = fade(zf);
@@ -144,13 +144,13 @@ class Noise {
   }
   
   double perlin(double x, double y, double z) {
-    double total = 0;
+    double noiseHeight = 0;
     double frequency = this.frequency;
     double amplitude = this.amplitude;
     double maxValue = 0;  // Used for normalizing result to 0.0 - 1.0
     
     for(int i = 0; i < octaves; i++) {
-        total += basePerlin(x * frequency, y * frequency, z * frequency) * amplitude;
+        noiseHeight += basePerlin(x * frequency, y * frequency, z * frequency) * amplitude;
         
         maxValue += amplitude;
         
@@ -158,6 +158,6 @@ class Noise {
         frequency *= lacunarity;
     }
     
-    return total / maxValue;
+    return noiseHeight / maxValue;
   }
 }
