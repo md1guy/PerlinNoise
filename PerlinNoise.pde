@@ -10,7 +10,7 @@ double yoff = 0;
 double x = 0;
 double y = 0;
 
-float rectSize = 5;
+float rectSize = 1;
 float noiseValue;
 
 double seed = 0;
@@ -36,10 +36,10 @@ void draw() {
   //noise.SetFrequency(map(mouseY, 0, height, 1, 16));
   //noise.SetLacunarity(map(mouseY, 0, width, 0, 16));
   
-  //seed = map(mouseX, 0, width, 0, 100);
+  //seed = map(mouseX, 0, width, 0, 10);
   
-  x = map(mouseX, 0, width, 0, 100);
-  y = map(mouseY, 0, height, 0, 100);
+  //x = map(mouseX, 0, width, 0, 100);
+  //y = map(mouseY, 0, height, 0, 100);
   
   drawNoise();
 }
@@ -71,11 +71,11 @@ void drawNoise() {
       
       noiseMap[x][y] = noiseValue;
 
-      xoff += 0.03;
+      xoff += 0.01;
     }
     
     xoff = 0;
-    yoff += 0.03;
+    yoff += 0.01;
   }
   
   for(int y = 0; y < height; y += rectSize) {
@@ -84,7 +84,18 @@ void drawNoise() {
       noiseValue = map(noiseMap[x][y], minNoiseHeight, maxNoiseHeight, 0, 1);
       
       noStroke();
-      fill(noiseValue * 255);
+      //fill(noiseValue * 255);
+      
+      if(noiseValue < 1)    fill(255, 255, 255);           // snow
+      if(noiseValue < 0.9)  fill(59, 38, 18);              // rock 2
+      if(noiseValue < 0.7)  fill(78, 50, 24);              // rock
+      if(noiseValue < 0.6)  fill(0, 153, 0);               // grass
+      if(noiseValue < 0.55) fill(0, 204, 0);               // grass 2
+      if(noiseValue < 0.45) fill(255, 255, 102);           // sand
+      if(noiseValue < 0.4)  fill(51, 102, 255);            // water
+      if(noiseValue < 0.3)  fill(0, 51, 204);              // deep water
+      
+      
       rect(x, y, rectSize, rectSize);
     }
   }
