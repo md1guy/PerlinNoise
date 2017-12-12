@@ -4,6 +4,8 @@ class Noise {
   int octaves = 6;
   double persistence = 0.5;
   double frequency = 1;
+  double amplitude = 1;
+  double lacunarity = 2.6;
   
   void SetOctaves(int octaves) {
     this.octaves = octaves;
@@ -15,6 +17,10 @@ class Noise {
   
   void SetFrequency(double frequency) {
     this.frequency = frequency;
+  }
+  
+  void SetLacunarity(double lacunarity) {
+    this.lacunarity = lacunarity;
   }
   
   
@@ -139,17 +145,17 @@ class Noise {
   
   double perlin(double x, double y, double z) {
     double total = 0;
-    double freq = frequency;
-    double amplitude = 1;
+    double frequency = this.frequency;
+    double amplitude = this.amplitude;
     double maxValue = 0;  // Used for normalizing result to 0.0 - 1.0
     
     for(int i = 0; i < octaves; i++) {
-        total += basePerlin(x * freq, y * freq, z * freq) * amplitude;
+        total += basePerlin(x * frequency, y * frequency, z * frequency) * amplitude;
         
         maxValue += amplitude;
         
         amplitude *= persistence;
-        freq *= 2;
+        frequency *= lacunarity;
     }
     
     return total / maxValue;
